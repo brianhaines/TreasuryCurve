@@ -1,61 +1,63 @@
+from tkinter import *
 import XMLgetClass as XML
-import tkinter
-import threading
-import time
 
-#x = XML.curveGet()
-#print(x.id[1])
-#print(x.month3[1])
-
-class getCurveValues(threading.Thread):
-	def __init__(self):
-		threading.Thread.__init__(self)
-		self._abort = False
-
-	def run(self):
-		#Things here:
-
-		#while not self._abort:
-
-			
-
-	def abort(self):
-		self._abort = True
+class App:
 
 
-class showTreasuryCurve(tkinter.Tk):
-	"""
-	"""
-	def __init__(self, parent):
-		tkinter.Tk.__init__(self, parent)
-		self.parent = parent
-		self.initialize()
+	def __init__(self, master):
 
-	def initialize(self):
-		self.grid()
+		frame = Frame(master)
+		frame.grid(column=0, row=0, columnspan=2, rowspan=12)
 
-		self.source_string = tkinter.StringVar()
+		self.button = Button(frame, text="CLOSE", fg="red", command=frame.quit)
+		self.button.grid(row=13, column=0)
 
-		#Define the text box where the source folder path is displayed
-		self.source = tkinter.Label(self, textvariable="1month or more if possible", anchor='w', fg='white', bg='blue')
-		self.source.grid(row = 0, column = 0, sticky = 'W')
-		self.source_string.set("1month")
+		#self.hi_there = Button(frame, text="Hello", command=self.say_hi)
+		#self.hi_there.grid(row=13, column=1)
 
-		#Source button
-		source_button = tkinter.Button(self, text="Retrieve Curve", command=self.getCurve())
-		source_button.grid(row = 4, column = 1, sticky = 'W')
+		#Get rates from the web
+		self.xml = XML.curveGet()
 
-	def getCurve(self):
-		self.worker = getCurveValues()
-		self.worker.start()
-		while self.worker.isAlive(): # We wait for the worker to stop.
-			time.sleep(1)
+		#Left Column
+		Label(frame, text=self.xml.date[1][:10]).grid(row=0)
+		Label(frame, text="TERM").grid(row=1)
+		Label(frame, text="1 Month").grid(row=2)
+		Label(frame, text="3 Month").grid(row=3)
+		Label(frame, text="6 Month").grid(row=4)
+		Label(frame, text="1 Year").grid(row=5)
+		Label(frame, text="2 Year").grid(row=6)
+		Label(frame, text="3 Year").grid(row=7)
+		Label(frame, text="5 Year").grid(row=8)
+		Label(frame, text="7 Year").grid(row=9)
+		Label(frame, text="10 Year").grid(row=10)
+		Label(frame, text="20 Year").grid(row=11)
+		Label(frame, text="30 Year").grid(row=12)
+
+		#Right Column
+		Label(frame, text="RATE").grid(row=1, column=1)
+		Label(frame, text=self.xml.month1[1]).grid(row=2, column=1)
+		Label(frame, text=self.xml.month3[1]).grid(row=3, column=1)
+		Label(frame, text=self.xml.month6[1]).grid(row=4, column=1)
+		Label(frame, text=self.xml.year1[1]).grid(row=5, column=1)
+		Label(frame, text=self.xml.year2[1]).grid(row=6, column=1)
+		Label(frame, text=self.xml.year3[1]).grid(row=7, column=1)
+		Label(frame, text=self.xml.year5[1]).grid(row=8, column=1)
+		Label(frame, text=self.xml.year7[1]).grid(row=9, column=1)
+		Label(frame, text=self.xml.year10[1]).grid(row=10, column=1)
+		Label(frame, text=self.xml.year20[1]).grid(row=11, column=1)
+		Label(frame, text=self.xml.year30[1]).grid(row=12, column=1)
+    
 
 
+	def say_hi(self):   
+		self.v.set("Hellooooo!")
+		self.s.set("Changed")
 
-if __name__=="__main__":
-	app = showTreasuryCurve(None) #Here parent is None because this is the 
-							 #first GUI element created
-	app.title("Treasury Curve")
-	app.mainloop()
+root = Tk()
 
+app = App(root)
+
+root.title("Treasury Yield Curve")
+root.geometry('250x280')
+root.mainloop()
+root.destroy() # optional; see description below
