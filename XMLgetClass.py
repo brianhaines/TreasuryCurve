@@ -1,3 +1,10 @@
+"""
+This class will allow the user to retrieve the most recent yield curve via:
+rateGet()
+or a list of dicts containing all of the current month's curves via:
+curveList
+"""
+
 import requests
 import xml.etree.ElementTree as ET
 
@@ -15,7 +22,7 @@ class curveGet():
 		#This collects all of the entries into a list called curveList
 		self.curveList = []
 		for entry in self.entries:
-			self.curveList.append(self.elementsToDict(entry))
+			self.curveList.append(self.elementsToDict(entry)) #This contains all the information.
 
 
 		self.id = 	self.rateGet('id')
@@ -39,7 +46,8 @@ class curveGet():
 		return element.tag.rsplit('}')[1]
 
 	def elementsToDict(self, entry):
-		"""Given an ElementTree representation for an 'element' node,
+		"""
+		Given an ElementTree representation for an 'element' node,
 		construct a corresponding Python dictionary
 		"""
 		d = {}
@@ -73,6 +81,7 @@ class curveGet():
 
 	def rateGet(self, node):
 		"""
-		This will take a tag/dict key and return the associated value
+		This will take a tag/dict key and return the associated value. Using findLastEntry
+		will return the most recent entry in the dict
 		"""		
 		return node, self.curveList[self.findLastEntry(self.curveList)][node]
