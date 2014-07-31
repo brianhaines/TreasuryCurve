@@ -67,8 +67,9 @@ def updateCurveDB(oneDay):
 			,year30 REAL)''')
 		db.commit()
 
-		#I need to make changes to this so that only new id's are added to the table
-		cursor.execute('''INSERT INTO curves(id, curveDate, month1, month3, month6, year1, year2, year3, year5, year7, year10
+		#'OR IGNORE' allows the INSERT command to ignore any rows where the 'unique' constraint is violated. This occurs
+		#when an attempt is made to INSERT an already existing day 
+		cursor.execute('''INSERT OR IGNORE INTO curves(id, curveDate, month1, month3, month6, year1, year2, year3, year5, year7, year10
 			, year20, year30) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)''', (cid, cDate, month1, month3, month6, year1, year2, 
 			year3, year5, year7, year10, year20, year30))
 		db.commit()
@@ -79,7 +80,7 @@ def updateCurveDB(oneDay):
 	finally:
 		db.close
 
-def getCurve():
+def getCurve(varTerm):
 
 	#To Do, be able to specify which column you want and/or return only
 	#that column
@@ -91,7 +92,12 @@ def getCurve():
 		cursor = db.cursor()
 
 		#Call the db
-		cursor.execute('''SELECT * FROM curves ORDER BY id''')
+		# varTerm = ""
+		# varTerm = "year30"
+		print(varTerm)
+		# cursor.execute('''SELECT * FROM curves ORDER BY id''')
+		# cursor.execute('''SELECT id, curveDate, ? FROM curves ORDER BY id''', (varTerm, ))
+		cursor.execute('''SELECT id, curveDate, %s FROM curves ORDER BY id''' % (varTerm, ))
 
 		for row in cursor:
 			print(row)
