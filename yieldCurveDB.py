@@ -15,6 +15,9 @@ import sqlite3
 import sys
 import XMLgetClass as XML
 
+#import numpy as numpy
+#import matplotlib.pypplot as plt
+
 #Where is the DB located?
 str=''
 dbPath = []
@@ -81,9 +84,7 @@ def updateCurveDB(oneDay):
 		db.close
 
 def getCurve(varTerm):
-
-	#To Do, be able to specify which column you want and/or return only
-	#that column
+	'''Takes a column name as an arg. eg month1 year30, and returns the entire history of that term/column.'''
 	db = None
 	try:
 		#Open existing db
@@ -91,12 +92,7 @@ def getCurve(varTerm):
 		# Get a cursor object
 		cursor = db.cursor()
 
-		#Call the db
-		# varTerm = ""
-		# varTerm = "year30"
 		print(varTerm)
-		# cursor.execute('''SELECT * FROM curves ORDER BY id''')
-		# cursor.execute('''SELECT id, curveDate, ? FROM curves ORDER BY id''', (varTerm, ))
 		cursor.execute('''SELECT id, curveDate, %s FROM curves ORDER BY id''' % (varTerm, ))
 
 		for row in cursor:
@@ -108,12 +104,31 @@ def getCurve(varTerm):
 	finally:
 		db.close
 
+def getMostRecent():
+	'''This returns the entirty of the most recent curve'''
+	recentList = [x.id[1], x.date[1][:10],
+		x.month1[1],
+		x.month3[1],
+		x.month6[1],
+		x.year1[1],
+		x.year2[1],
+		x.year3[1],
+		x.year5[1],
+		x.year7[1],
+		x.year10[1],
+		x.year20[1],
+		x.year30[1]]
+	return(recentList)	
+	
+
+def plotCurve():
+	pass
+
 
 def main():
-	#Take curveList and turn it into something useful, one day's curve at a time.
+	'''Take curveList and turn it into something useful, one day's curve at a time.'''
 	for i in x.curveList: #i is a dict
 		updateCurveDB(i)
 
-	# getCurve()
 
 if __name__ == '__main__': main()
