@@ -4,10 +4,13 @@ yield curve data from XMLgetClass variable .curveList[]
 
 Previous files are merged into one that uses functions to perform the various actions
 
-When this file is run, it will:
+When this file is run from the command line, it will automatically:
 1. Scrape yield curve info off the treasury.gov website 
 2. Open a connection to a local db using sqlite3
 3. Add any new curves to the database
+
+Using functions, the user can extract all of the curves currently on the treasury.gov 
+website by accessing , (getMostRecent()) or all of the values for a specific term stored in the DB (getCurve())
 4. Offer a means of extracting a specific curve term or all of them
 """
 
@@ -84,7 +87,10 @@ def updateCurveDB(oneDay):
 		db.close
 
 def getCurve(varTerm):
-	'''Takes a column name as an arg. eg month1 year30, and returns the entire history of that term/column.'''
+	'''
+	Takes a column name as an arg. eg month1 year30, and returns the entire history of 
+	that term/column. Source is the local DB.
+	'''
 	db = None
 	try:
 		#Open existing db
@@ -105,7 +111,11 @@ def getCurve(varTerm):
 		db.close
 
 def getMostRecent():
-	'''This returns the entirty of the most recent curve'''
+	'''
+	This returns the entirty of the most recent curve available on the treasury.gov website.
+	The .id, .date etc parameters of the XMLgetClass.getCurve are defined as the most recent 
+	curve available on the website.
+	'''
 	recentList = [x.id[1], x.date[1][:10],
 		x.month1[1],
 		x.month3[1],
@@ -122,13 +132,13 @@ def getMostRecent():
 	
 
 def plotCurve():
+	'''Use matplotlib.pypplot to plot things like each day's curve'''
 	pass
 
 
 def main():
-	'''Take curveList and turn it into something useful, one day's curve at a time.'''
+	'''Take curveList (a list containing dicts of curves) and store the new curves in a database.'''
 	for i in x.curveList: #i is a dict
 		updateCurveDB(i)
-
 
 if __name__ == '__main__': main()
